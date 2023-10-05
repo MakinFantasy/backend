@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -14,6 +16,7 @@ class File_tb(models.Model):
     size_file = models.CharField(max_length=50, blank=True)
     create_at = models.DateTimeField(auto_created=True)
     file_type = models.CharField(max_length=20, blank=True, null=True)
+    uuid = models.UUIDField(default=uuid.uuid4)
 
     def __str__(self):
         return f"{self.file_name}, {self.description}"

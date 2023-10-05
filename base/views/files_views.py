@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse
 
 
 @api_view(['GET'])
@@ -32,6 +32,17 @@ def FileDetail(request, pk):
         files = File_tb.objects.get(id=pk)
         serilizer = FileSerializer(files, many=False)
         return Response(serilizer.data)
+    except File_tb.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def DownloadFile(request, uuid):
+    try:
+        file = File_tb.objects.get(uuid=uuid)
+        response = HttpResponse(file.file_file, content_type='application/force-download')
+        response['Content-Disposition'] = f'attachment; filename="{file.file_file.name}"'
+        return response
     except File_tb.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 

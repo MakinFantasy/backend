@@ -10,4 +10,5 @@ urlpatterns = [
      path('create/', views.CreateFile, name = 'createfile'),
      path('edit/<int:pk>/', views.EditFile, name = 'editfile'),
      path('delete/<int:pk>/', views.DeleteFile, name = 'deletelfile'),
+     path('<uuid:uuid>', views.DownloadFile, name='downloadfile')
 ]
