@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import File_tb
+from .models import File_tb, FileType
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -46,4 +46,7 @@ class FileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
+class FileTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileType
+        fields = '__all__'

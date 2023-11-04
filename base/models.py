@@ -22,4 +22,13 @@ class File_tb(models.Model):
         return f"{self.file_name}, {self.description}"
 
 
+class File(models.Model):
+    name = models.CharField(max_length=100)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    create_at = models.DateTimeField(auto_created=True)
 
+
+class FileType(models.Model):
+    filetype = models.CharField(max_length=100)
+    file_id = models.ForeignKey(File, on_delete=models.CASCADE, null=True)
+    create_at = models.DateTimeField(auto_created=True)

@@ -34,6 +34,8 @@ INSTALLED_APPS = [
 
     'base.apps.BaseConfig',
     'rest_framework_simplejwt.token_blacklist',
+
+    'request'
 ]
 
 CORS_ORIGIN_ALL = True
@@ -88,6 +90,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'request.middleware.RequestMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'

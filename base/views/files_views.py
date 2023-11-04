@@ -1,4 +1,4 @@
-from base.models import File_tb
+from base.models import File_tb, FileType, File
 from base.serializers import FileSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -68,6 +68,19 @@ def CreateFile(request):
             create_at=data['create_at'],
             file_type=data['file_type']
         )
+
+        file = File.objects.create(
+            name=data['file_name'],
+            user_id=user,
+            create_at=data['create_at']
+        )
+
+        filetype = FileType.objects.create(
+            filetype=data['file_type'],
+            file_id=File.objects.latest('create_at'),
+            create_at = data['create_at']
+        )
+
     serilizer = FileSerializer(data=request.data)
     if serilizer.is_valid():
         return Response({'detail': 'The File created successfully!'}, status=status.HTTP_201_CREATED)
