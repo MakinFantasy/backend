@@ -1,22 +1,20 @@
 import os
-from dotenv import load_dotenv, find_dotenv
 from datetime import timedelta
 from pathlib import Path
 
 # Take environment variables from .env file
-load_dotenv(find_dotenv(".env"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = ')$l+3azlm_k9s0w4gto^61@(2uq2f^&25!rw#frpo94atj&2go'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = os.environ.get('DEBUG')
+DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = []
 # APPEND_SLASH=False
 
 # Application definition
@@ -29,14 +27,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'base',
     'rest_framework',
+    'django_filters',
+    'simple_history',
     'corsheaders',
-
-    'base.apps.BaseConfig',
+    'import_export',
     'rest_framework_simplejwt.token_blacklist',
-
     'request'
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 7,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
 
 CORS_ORIGIN_ALL = True
 CORS_ORIGIN_WHITELIST = ('http://localhost:8000',
@@ -49,14 +58,6 @@ CORS_ALLOWED_ORIGIN = ['http://localhost:8000',
                        'http://127.0.0.1:8000',
                        'http://127.0.0.1:3000']
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-    #   'DEFAULT_PERMISSION_CLASSES': (
-    #       'rest_framework.permissions.IsAuthenticated',
-    #   )
-}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
@@ -118,12 +119,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('PORT')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

@@ -1,52 +1,34 @@
 from rest_framework import serializers
-from .models import File_tb, FileType
+from .models import Category, File, Folder, Tag
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-
-
-class UserSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(read_only=True)
-    _id = serializers.SerializerMethodField(read_only=True)
-    isAdmin = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['id', '_id', 'username', 'email', 'name', 'isAdmin']
-
-    def get__id(self, obj):
-        return obj.id
-
-    def get_isAdmin(self, obj):
-        return obj.is_staff
-
-    def get_name(self, obj):
-        name = obj.first_name
-        if name == '':
-            name = obj.email
-
-        return name
-
-
-class UserSerializerWithToken(UserSerializer):
-    token = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['id', '_id', 'username', 'email', 'name', 'isAdmin', 'token']
-
-    def get_token(self, obj):
-        token = RefreshToken.for_user(obj)
-        return str(token.access_token)
 
 
 class FileSerializer(serializers.ModelSerializer):
     # user = serializers.SerializerMethodField(read_only=True)
     class Meta:
-        model = File_tb
+        model = File
         fields = '__all__'
 
 
-class FileTypeSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = FileType
+        model = Category
+        fields = '__all__'
+
+    def validate(self, data):
+        if len(data['name']) < 3:
+            raise serializers.ValidationError('Title should not be less than 3 characters')
+        return data
+        
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
+class FolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
         fields = '__all__'

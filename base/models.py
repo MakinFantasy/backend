@@ -2,33 +2,55 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import timezone
+from django.utils import timezone
+from simple_history.models import HistoricalRecords
 
 
-def user_directory_path(instance, filename):
-    return 'user_{0}/{1}'.format(instance.user_id, filename)
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_created=True, blank=True, default=timezone.now)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = 'Tags'
 
 
-class File_tb(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    file_file = models.FileField(upload_to=user_directory_path, null=True, blank=True)
-    file_name = models.CharField(max_length=50, blank=True, null=True)
-    description = models.TextField(max_length=255, blank=True, null=True)
-    size_file = models.CharField(max_length=50, blank=True)
-    create_at = models.DateTimeField(auto_created=True)
-    file_type = models.CharField(max_length=20, blank=True, null=True)
+class File(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4)
+    file_name = models.CharField(max_length=50, blank=True, null=True)
+    file_file = models.FileField(upload_to='files/')
+    description = models.TextField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_created=True, blank=True, default=timezone.now)
+    file_type = models.CharField(max_length=20, blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.file_name}, {self.description}"
 
+    class Meta:
+        verbose_name_plural = "Files"
 
-class File(models.Model):
+
+class Category(models.Model):
     name = models.CharField(max_length=100)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    create_at = models.DateTimeField(auto_created=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    files = models.ManyToManyField(File, blank=True)
+    created_at = models.DateTimeField(auto_created=True, blank=True, default=timezone.now)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = "Categories"
 
 
-class FileType(models.Model):
-    filetype = models.CharField(max_length=100)
-    file_id = models.ForeignKey(File, on_delete=models.CASCADE, null=True)
-    create_at = models.DateTimeField(auto_created=True)
+class Folder(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
+    files = models.ManyToManyField(File, blank=True)
+    created_at = models.DateTimeField(auto_created=True, blank=True, default=timezone.now)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural = "Folders"
+    
